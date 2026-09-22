@@ -74,7 +74,6 @@ export function Parcels() {
   const [ratePerKg, setRatePerKg] = useState(String(DEFAULT_RATE_PER_KG));
 
   const clientName = (id: number) => clients.find((c) => c.id === id)?.name ?? `#${id}`;
-  const riderName = (id: number | null) => (id ? riders.find((r) => r.id === id)?.name ?? `#${id}` : "—");
 
   const previewAmount = (Number(weightKg) || 0) * (Number(ratePerKg) || 0);
 

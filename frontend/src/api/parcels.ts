@@ -84,6 +84,7 @@ export const parcelsApi = {
       receiver_phone: string;
       weight_kg: number;
       rate_per_kg: number;
+      amount: number;
     }>,
   ) => request<Parcel>(`/parcels/${id}`, token, { method: "PATCH", body: JSON.stringify(data) }),
   remove: (token: string, id: number) => request<void>(`/parcels/${id}`, token, { method: "DELETE" }),
