@@ -132,10 +132,8 @@ export function Login() {
           </Link>
 
           <p className="login-built-by">
-            Built by{" "}
-            <a href="mailto:rafaysyed819@gmail.com">
-              <strong>Syed Rafay Ali</strong>
-            </a>
+            Built by <strong>Syed Rafay Ali</strong> —{" "}
+            <a href="mailto:rafaysyed819@gmail.com">rafaysyed819@gmail.com</a>
           </p>
         </form>
       </div>
