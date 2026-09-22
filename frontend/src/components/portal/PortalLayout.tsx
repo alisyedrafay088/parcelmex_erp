@@ -2,7 +2,6 @@ import { useState } from "react";
 import { Outlet, useLocation } from "react-router-dom";
 import { LogOut, Package, FileText, Truck, Search, Printer, MapPinCheck } from "lucide-react";
 import { Sidebar, type SidebarModule } from "../layout/Sidebar";
-import { ChatWidget } from "./ChatWidget";
 import { useAuth } from "../../context/AuthContext";
 
 const PORTAL_MODULES: SidebarModule[] = [
@@ -67,7 +66,6 @@ export function PortalLayout() {
           <Outlet />
         </div>
       </div>
-      <ChatWidget />
     </div>
   );
 }

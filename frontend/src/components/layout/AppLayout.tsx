@@ -18,7 +18,6 @@ import {
 } from "lucide-react";
 import { Sidebar, type SidebarModule } from "./Sidebar";
 import { GlobalSearch } from "./GlobalSearch";
-import { AdminChatWidget } from "../AdminChatWidget";
 import { useAuth } from "../../context/AuthContext";
 import { ROUTE_FEATURE } from "../../config/features";
 
@@ -102,7 +101,6 @@ export function AppLayout() {
           <Outlet />
         </div>
       </div>
-      <AdminChatWidget />
     </div>
   );
 }

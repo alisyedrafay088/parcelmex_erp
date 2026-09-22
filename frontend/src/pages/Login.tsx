@@ -2,7 +2,6 @@ import { useState, type FormEvent } from "react";
 import { Link, Navigate, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import { Logo } from "../components/Logo";
-import { AdminChatWidget } from "../components/AdminChatWidget";
 
 const FEATURES = [
   "Parcels, riders and routes, live",
@@ -112,10 +111,6 @@ export function Login() {
             {submitting ? "Signing in..." : "Sign in"}
           </button>
 
-          <p className="login-hint">
-            Default admin: <strong>admin / Admin@123</strong>
-          </p>
-
           <div className="login-divider">
             <span className="line" />
             <span>Or</span>
@@ -141,7 +136,6 @@ export function Login() {
           </p>
         </form>
       </div>
-      <AdminChatWidget />
     </div>
   );
 }

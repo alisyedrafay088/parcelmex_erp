@@ -1,12 +1,10 @@
 from datetime import datetime
 
 from fastapi import APIRouter, Depends, File, HTTPException, Response, UploadFile
-from fastapi.responses import StreamingResponse
 from sqlalchemy import func
 from sqlalchemy.orm import Session
 
 from app.core.bulk_upload import parse_upload
-from app.core.chatbot import ChatbotError, build_system_prompt, extract_mentioned_ids, stream_chat_reply
 from app.core.database import get_db
 from app.core.deps import require_client
 from app.core.pdf import generate_airway_bill_pdf, generate_invoice_pdf
@@ -17,12 +15,9 @@ from app.models.invoice import Invoice
 from app.models.parcel import Parcel, ParcelStatus
 from app.models.rider import Rider
 from app.models.user import User
-from app.schemas.chat import ChatRequest
 from app.schemas.invoice import InvoiceOut
 from app.schemas.parcel import AddressVerificationUpdate, ParcelOut, PortalParcelBatchCreate, PortalParcelCreate
 from app.schemas.portal import BulkUploadResult, PortalClientOut, PortalParcelOut, PortalParcelUpdate, PortalSummary
-
-MAX_CHAT_CONTEXT_ITEMS = 6
 
 MAX_BULK_ROWS = 500
 
@@ -262,106 +257,3 @@ def download_my_airway_bill(
     )
 
 
-def _format_pkr(value: float) -> str:
-    return f"PKR {round(value):,}"
-
-
-@router.post("/chat")
-def chat_with_assistant(
-    payload: ChatRequest, current_user: User = Depends(require_client), db: Session = Depends(get_db)
-):
-    client = db.get(Client, current_user.client_id)
-    if not client:
-        raise HTTPException(status_code=404, detail="Client record not found")
-
-    parcels = (
-        db.query(Parcel)
-        .filter(Parcel.client_id == current_user.client_id)
-        .order_by(Parcel.created_at.desc())
-        .limit(MAX_CHAT_CONTEXT_ITEMS)
-        .all()
-    )
-    parcels_summary = "\n".join(
-        f"- {p.tracking_id}: status={p.status.value}, destination={p.destination_address or 'n/a'}, "
-        f"weight={p.weight_kg}kg, amount={_format_pkr(p.amount) if p.amount else 'pending'}"
-        for p in parcels
-    )
-
-    invoices = (
-        db.query(Invoice)
-        .filter(Invoice.client_id == current_user.client_id)
-        .order_by(Invoice.issued_at.desc())
-        .limit(MAX_CHAT_CONTEXT_ITEMS)
-        .all()
-    )
-    invoices_summary = "\n".join(
-        f"- {inv.invoice_number}: status={inv.status.value}, amount={_format_pkr(inv.amount)}, "
-        f"due={inv.due_date.isoformat() if inv.due_date else 'n/a'}"
-        for inv in invoices
-    )
-
-    known_tracking_ids = {p.tracking_id for p in parcels}
-    known_invoice_numbers = {inv.invoice_number for inv in invoices}
-    mentioned_tracking_ids: set[str] = set()
-    mentioned_invoice_numbers: set[str] = set()
-    for m in payload.messages:
-        if m.role != "user":
-            continue
-        tids, invs = extract_mentioned_ids(m.content)
-        mentioned_tracking_ids |= tids
-        mentioned_invoice_numbers |= invs
-    mentioned_tracking_ids -= known_tracking_ids
-    mentioned_invoice_numbers -= known_invoice_numbers
-
-    specific_lines = []
-    if mentioned_tracking_ids:
-        found_parcels = (
-            db.query(Parcel)
-            .filter(Parcel.client_id == current_user.client_id, Parcel.tracking_id.in_(mentioned_tracking_ids))
-            .all()
-        )
-        for p in found_parcels:
-            specific_lines.append(
-                f"- {p.tracking_id}: status={p.status.value}, destination={p.destination_address or 'n/a'}, "
-                f"weight={p.weight_kg}kg, amount={_format_pkr(p.amount) if p.amount else 'pending'}"
-            )
-        found_ids = {p.tracking_id for p in found_parcels}
-        for missing in mentioned_tracking_ids - found_ids:
-            specific_lines.append(f"- {missing}: not found in this account's records")
-
-    if mentioned_invoice_numbers:
-        found_invoices = (
-            db.query(Invoice)
-            .filter(Invoice.client_id == current_user.client_id, Invoice.invoice_number.in_(mentioned_invoice_numbers))
-            .all()
-        )
-        for inv in found_invoices:
-            specific_lines.append(
-                f"- {inv.invoice_number}: status={inv.status.value}, amount={_format_pkr(inv.amount)}, "
-                f"due={inv.due_date.isoformat() if inv.due_date else 'n/a'}"
-            )
-        found_numbers = {inv.invoice_number for inv in found_invoices}
-        for missing in mentioned_invoice_numbers - found_numbers:
-            specific_lines.append(f"- {missing}: not found in this account's records")
-
-    specific_records_summary = "\n".join(specific_lines)
-
-    system_prompt = build_system_prompt(client.name, parcels_summary, invoices_summary, specific_records_summary)
-    history = [{"role": m.role, "content": m.content} for m in payload.messages]
-
-    generator = stream_chat_reply(system_prompt, history)
-    try:
-        first_piece = next(generator)
-    except ChatbotError as exc:
-        raise HTTPException(status_code=503, detail=str(exc))
-    except StopIteration:
-        raise HTTPException(status_code=503, detail="The chat assistant returned an empty response.")
-
-    def full_stream():
-        yield first_piece
-        try:
-            yield from generator
-        except ChatbotError:
-            pass
-
-    return StreamingResponse(full_stream(), media_type="text/plain; charset=utf-8")
