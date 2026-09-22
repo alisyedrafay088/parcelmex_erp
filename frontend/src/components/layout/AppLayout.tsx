@@ -15,6 +15,7 @@ import {
   Printer,
   Wallet,
   MapPinCheck,
+  Menu,
 } from "lucide-react";
 import { Sidebar, type SidebarModule } from "./Sidebar";
 import { GlobalSearch } from "./GlobalSearch";
@@ -64,6 +65,7 @@ function initialsFor(name: string | undefined) {
 
 export function AppLayout() {
   const [collapsed, setCollapsed] = useState(false);
+  const [mobileNavOpen, setMobileNavOpen] = useState(false);
   const { user, logout, hasFeature } = useAuth();
   const location = useLocation();
 
@@ -76,9 +78,23 @@ export function AppLayout() {
 
   return (
     <div className="app-shell">
-      <Sidebar modules={modules} collapsed={collapsed} onToggle={() => setCollapsed((c) => !c)} />
+      <Sidebar
+        modules={modules}
+        collapsed={mobileNavOpen ? false : collapsed}
+        onToggle={() => setCollapsed((c) => !c)}
+        mobileOpen={mobileNavOpen}
+        onMobileClose={() => setMobileNavOpen(false)}
+      />
       <div className="app-main">
         <header className="app-topbar">
+          <button
+            type="button"
+            className="mobile-nav-toggle"
+            onClick={() => setMobileNavOpen(true)}
+            title="Open menu"
+          >
+            <Menu size={20} />
+          </button>
           <h1 className="app-topbar-title">{title}</h1>
 
           <GlobalSearch />

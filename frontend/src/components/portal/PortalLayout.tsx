@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Outlet, useLocation } from "react-router-dom";
-import { LogOut, Package, FileText, Truck, Search, Printer, MapPinCheck } from "lucide-react";
+import { LogOut, Package, FileText, Truck, Search, Printer, MapPinCheck, Menu } from "lucide-react";
 import { Sidebar, type SidebarModule } from "../layout/Sidebar";
 import { useAuth } from "../../context/AuthContext";
 
@@ -33,6 +33,7 @@ function initialsFor(name: string | undefined) {
 
 export function PortalLayout() {
   const [collapsed, setCollapsed] = useState(false);
+  const [mobileNavOpen, setMobileNavOpen] = useState(false);
   const { user, logout } = useAuth();
   const location = useLocation();
 
@@ -42,12 +43,22 @@ export function PortalLayout() {
     <div className="app-shell">
       <Sidebar
         modules={PORTAL_MODULES}
-        collapsed={collapsed}
+        collapsed={mobileNavOpen ? false : collapsed}
         onToggle={() => setCollapsed((c) => !c)}
         footerText="Secure customer access"
+        mobileOpen={mobileNavOpen}
+        onMobileClose={() => setMobileNavOpen(false)}
       />
       <div className="app-main">
         <header className="app-topbar">
+          <button
+            type="button"
+            className="mobile-nav-toggle"
+            onClick={() => setMobileNavOpen(true)}
+            title="Open menu"
+          >
+            <Menu size={20} />
+          </button>
           <h1 className="app-topbar-title">{title}</h1>
           <div className="app-topbar-actions">
             <div className="app-avatar">

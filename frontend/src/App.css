@@ -2717,3 +2717,70 @@ body {
   background: #1e40af;
 }
 
+/* Mobile nav drawer */
+
+.mobile-nav-toggle {
+  display: none;
+  border: none;
+  background: transparent;
+  color: #475569;
+  cursor: pointer;
+  padding: 0.35rem;
+  border-radius: 6px;
+  flex-shrink: 0;
+}
+
+.mobile-nav-toggle:hover {
+  background: #f1f5f9;
+}
+
+.sidebar-backdrop {
+  display: none;
+}
+
+@media (max-width: 860px) {
+  .mobile-nav-toggle {
+    display: flex;
+  }
+
+  .app-topbar {
+    gap: 0.75rem;
+    padding: 0.85rem 1rem;
+  }
+
+  .app-topbar-search {
+    display: none;
+  }
+
+  .app-avatar-info {
+    display: none;
+  }
+
+  .sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100vh;
+    width: 260px;
+    z-index: 300;
+    transform: translateX(-100%);
+    transition: transform 0.25s ease;
+  }
+
+  .sidebar.sidebar-mobile-open {
+    transform: translateX(0);
+  }
+
+  .sidebar-backdrop {
+    display: block;
+    position: fixed;
+    inset: 0;
+    background: rgba(15, 23, 42, 0.5);
+    z-index: 250;
+  }
+
+  .dashboard {
+    padding: 0 1rem 2rem;
+  }
+}
+
