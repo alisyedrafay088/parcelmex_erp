@@ -313,11 +313,11 @@ body {
 }
 
 .login-built-by a {
-  color: #2563eb;
+  color: inherit;
   text-decoration: none;
 }
 
-.login-built-by a:hover {
+.login-built-by a:hover strong {
   text-decoration: underline;
 }
 
