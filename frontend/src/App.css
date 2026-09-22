@@ -312,6 +312,15 @@ body {
   color: #475569;
 }
 
+.login-built-by a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.login-built-by a:hover strong {
+  text-decoration: underline;
+}
+
 @media (max-width: 860px) {
   .login-page {
     grid-template-columns: 1fr;
