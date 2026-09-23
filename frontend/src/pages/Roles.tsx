@@ -1,5 +1,5 @@
 import { useEffect, useState, type FormEvent } from "react";
-import { Plus, ShieldCheck, Trash2 } from "lucide-react";
+import { KeyRound, Plus, ShieldCheck, Trash2 } from "lucide-react";
 import { usersApi, type StaffUser, type UserRole } from "../api/users";
 import { permissionsApi, type PermissionMatrix } from "../api/permissions";
 import { FEATURES } from "../config/features";
@@ -33,6 +33,11 @@ export function Roles() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [role, setRole] = useState<UserRole>("support");
+
+  const [resetTarget, setResetTarget] = useState<StaffUser | null>(null);
+  const [newPassword, setNewPassword] = useState("");
+  const [resetError, setResetError] = useState<string | null>(null);
+  const [resetSaving, setResetSaving] = useState(false);
 
   const [matrix, setMatrix] = useState<PermissionMatrix>({});
   const [permRoles, setPermRoles] = useState<string[]>([]);
@@ -120,6 +125,26 @@ export function Roles() {
     if (!token) return;
     await usersApi.updateRole(token, id, newRole);
     load();
+  }
+
+  async function handleResetPassword(e: FormEvent) {
+    e.preventDefault();
+    if (!token || !resetTarget) return;
+    if (newPassword.length < 6) {
+      setResetError("Password must be at least 6 characters");
+      return;
+    }
+    setResetSaving(true);
+    setResetError(null);
+    try {
+      await usersApi.resetPassword(token, resetTarget.id, newPassword);
+      setResetTarget(null);
+      setNewPassword("");
+    } catch (err) {
+      setResetError(err instanceof Error ? err.message : "Failed to update password");
+    } finally {
+      setResetSaving(false);
+    }
   }
 
   async function handleDelete(id: number) {
@@ -229,15 +254,29 @@ export function Roles() {
                   </select>
                 </td>
                 <td>
-                  <button
-                    type="button"
-                    className="icon-button icon-button-danger"
-                    onClick={() => handleDelete(member.id)}
-                    disabled={member.id === user?.id}
-                    title={member.id === user?.id ? "You cannot remove your own account" : "Remove"}
-                  >
-                    <Trash2 size={14} />
-                  </button>
+                  <div style={{ display: "flex", gap: "0.4rem" }}>
+                    <button
+                      type="button"
+                      className="icon-button"
+                      onClick={() => {
+                        setResetTarget(member);
+                        setNewPassword("");
+                        setResetError(null);
+                      }}
+                      title="Reset password"
+                    >
+                      <KeyRound size={14} />
+                    </button>
+                    <button
+                      type="button"
+                      className="icon-button icon-button-danger"
+                      onClick={() => handleDelete(member.id)}
+                      disabled={member.id === user?.id}
+                      title={member.id === user?.id ? "You cannot remove your own account" : "Remove"}
+                    >
+                      <Trash2 size={14} />
+                    </button>
+                  </div>
                 </td>
               </tr>
             ))}
@@ -307,6 +346,44 @@ export function Roles() {
           </div>
         )}
       </section>
+
+      {resetTarget && (
+        <div className="confirm-overlay" onMouseDown={() => setResetTarget(null)}>
+          <div className="confirm-dialog" onMouseDown={(e) => e.stopPropagation()}>
+            <div className="confirm-dialog-icon">
+              <KeyRound size={18} />
+            </div>
+            <h3 className="confirm-dialog-title">Reset password</h3>
+            <p className="confirm-dialog-message">
+              Set a new password for <strong>{resetTarget.name}</strong> ({resetTarget.username}).
+            </p>
+            <form onSubmit={handleResetPassword}>
+              <input
+                type="password"
+                placeholder="New password"
+                value={newPassword}
+                onChange={(e) => setNewPassword(e.target.value)}
+                autoFocus
+                required
+                style={{ width: "100%", marginBottom: "1rem" }}
+              />
+              {resetError && <p className="login-error">{resetError}</p>}
+              <div className="confirm-dialog-actions">
+                <button
+                  type="button"
+                  className="confirm-btn confirm-btn-cancel"
+                  onClick={() => setResetTarget(null)}
+                >
+                  Cancel
+                </button>
+                <button type="submit" className="confirm-btn confirm-btn-primary" disabled={resetSaving}>
+                  {resetSaving ? "Saving..." : "Save"}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

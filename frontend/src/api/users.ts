@@ -37,5 +37,7 @@ export const usersApi = {
   ) => request<StaffUser>("/users", token, { method: "POST", body: JSON.stringify(data) }),
   updateRole: (token: string, id: number, role: UserRole) =>
     request<StaffUser>(`/users/${id}`, token, { method: "PATCH", body: JSON.stringify({ role }) }),
+  resetPassword: (token: string, id: number, password: string) =>
+    request<StaffUser>(`/users/${id}`, token, { method: "PATCH", body: JSON.stringify({ password }) }),
   remove: (token: string, id: number) => request<void>(`/users/${id}`, token, { method: "DELETE" }),
 };
