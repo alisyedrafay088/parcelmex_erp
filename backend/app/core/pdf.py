@@ -209,10 +209,10 @@ def generate_airway_bill_pdf(parcel: Parcel, client: Client) -> bytes:
     header_h = 10 * mm
     c.setFillColor(NAVY)
     c.setFont("Helvetica-BoldOblique", 13)
-    c.drawString(LABEL_MARGIN, LABEL_HEIGHT - 5.5 * mm, "PARCEL")
-    brand_w = stringWidth("PARCEL ", "Helvetica-BoldOblique", 13)
+    c.drawString(LABEL_MARGIN, LABEL_HEIGHT - 5.5 * mm, "ZUHA")
+    brand_w = stringWidth("ZUHA ", "Helvetica-BoldOblique", 13)
     c.setFillColor(ORANGE)
-    c.drawString(LABEL_MARGIN + brand_w, LABEL_HEIGHT - 5.5 * mm, "MEX.")
+    c.drawString(LABEL_MARGIN + brand_w, LABEL_HEIGHT - 5.5 * mm, "EXPRESS.")
 
     c.setFillColor(GREY)
     c.setFont("Helvetica", 5.5)
