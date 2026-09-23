@@ -49,7 +49,10 @@ def update_user(
     if not user:
         raise HTTPException(status_code=404, detail="User not found")
     for field, value in payload.model_dump(exclude_unset=True).items():
-        setattr(user, field, value)
+        if field == "password":
+            user.password_hash = hash_password(value)
+        else:
+            setattr(user, field, value)
     db.commit()
     db.refresh(user)
     return user

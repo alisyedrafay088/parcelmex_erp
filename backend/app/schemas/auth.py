@@ -19,6 +19,7 @@ class UserLogin(BaseModel):
 class UserUpdate(BaseModel):
     name: str | None = None
     role: UserRole | None = None
+    password: str | None = None
 
 
 class UserOut(BaseModel):
