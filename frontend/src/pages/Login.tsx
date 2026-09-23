@@ -44,7 +44,7 @@ export function Login() {
           Run every parcel, rider and rupee from one place.
         </h1>
         <p className="login-tagline">
-          The complete back office for Parcel Mex — dispatch, fleet, billing
+          The complete back office for ZUHA Express — dispatch, fleet, billing
           and everything in between.
         </p>
 

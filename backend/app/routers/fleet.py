@@ -87,7 +87,7 @@ def create_rider_account(rider_id: int, payload: RiderAccountCreate, db: Session
     rider_user = User(
         name=rider.name,
         username=payload.username,
-        email=f"rider{rider.id}@parcelmex.internal",
+        email=f"rider{rider.id}@zuhaexpress.internal",
         password_hash=hash_password(payload.password),
         role=UserRole.rider,
         rider_id=rider.id,

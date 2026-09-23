@@ -18,7 +18,7 @@ export function Logo({ size = "md", withTagline = false }: LogoProps) {
         className="pm-logo-badge"
         style={{ padding: s.padding, borderRadius: s.radius, fontSize: s.fontSize }}
       >
-        <span className="pm-logo-parcel">PARCEL</span>
+        <span className="pm-logo-parcel">ZUHA</span>
         <svg
           className="pm-logo-truck"
           viewBox="0 0 64 40"
@@ -33,7 +33,7 @@ export function Logo({ size = "md", withTagline = false }: LogoProps) {
           <circle cx="47" cy="30" r="6" fill="#111827" />
           <circle cx="47" cy="30" r="2.4" fill="#9ca3af" />
         </svg>
-        <span className="pm-logo-mex">MEX.</span>
+        <span className="pm-logo-mex">EXPRESS.</span>
       </div>
       {withTagline && (
         <p className="pm-logo-tagline" style={{ fontSize: s.tagline }}>

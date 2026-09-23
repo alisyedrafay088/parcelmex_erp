@@ -25,7 +25,7 @@ from app.routers import (
     warehouses,
 )
 
-app = FastAPI(title="Parcel Mex API")
+app = FastAPI(title="ZUHA Express API")
 
 app.add_middleware(
     CORSMiddleware,
@@ -79,4 +79,4 @@ app.include_router(expenses.router)
 
 @app.get("/")
 def root():
-    return {"status": "ok", "service": "Parcel Mex API"}
+    return {"status": "ok", "service": "ZUHA Express API"}
