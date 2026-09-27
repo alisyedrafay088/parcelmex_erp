@@ -8,6 +8,7 @@ COLUMN_ALIASES = {
     "description": {"description", "desc", "item", "items", "details"},
     "weight_kg": {"weight_kg", "weight", "weight(kg)", "weightkg", "weight kg"},
     "quantity": {"quantity", "qty", "pieces", "pcs"},
+    "cod_amount": {"cod_amount", "cod", "amount", "parcel_amount"},
 }
 
 
@@ -27,11 +28,14 @@ def _map_headers(headers: list[str]) -> dict[str, int]:
 
 
 class ParsedRow:
-    def __init__(self, destination_address: str, description: str | None, weight_kg: float, quantity: int):
+    def __init__(
+        self, destination_address: str, description: str | None, weight_kg: float, quantity: int, cod_amount: float
+    ):
         self.destination_address = destination_address
         self.description = description
         self.weight_kg = weight_kg
         self.quantity = quantity
+        self.cod_amount = cod_amount
 
 
 def parse_upload(filename: str, content: bytes) -> tuple[list[ParsedRow], list[str]]:
@@ -76,6 +80,7 @@ def parse_upload(filename: str, content: bytes) -> tuple[list[ParsedRow], list[s
         weight_raw = get("weight_kg")
         description = get("description") or None
         quantity_raw = get("quantity")
+        cod_raw = get("cod_amount")
 
         if not destination:
             errors.append(f"Row {i}: missing destination address, skipped.")
@@ -96,6 +101,14 @@ def parse_upload(filename: str, content: bytes) -> tuple[list[ParsedRow], list[s
         except ValueError:
             quantity = 1
 
-        parsed.append(ParsedRow(destination, description, weight_kg, quantity))
+        try:
+            cod_amount = float(cod_raw) if cod_raw else 0.0
+            if cod_amount < 0:
+                raise ValueError
+        except ValueError:
+            errors.append(f"Row {i}: invalid COD amount '{cod_raw}', skipped.")
+            continue
+
+        parsed.append(ParsedRow(destination, description, weight_kg, quantity, cod_amount))
 
     return parsed, errors

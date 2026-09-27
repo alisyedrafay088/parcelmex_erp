@@ -178,7 +178,13 @@ export function AirwayBill() {
                     <span className="airway-preview-value">{selectedParcel.weight_kg} kg</span>
                   </div>
                   <div>
-                    <span className="airway-preview-label">Amount</span>
+                    <span className="airway-preview-label">COD Amount</span>
+                    <span className="airway-preview-value">
+                      {selectedParcel.cod_amount ? `PKR ${Math.round(selectedParcel.cod_amount).toLocaleString()}` : "-"}
+                    </span>
+                  </div>
+                  <div>
+                    <span className="airway-preview-label">Charges</span>
                     <span className="airway-preview-value">
                       {selectedParcel.amount ? `PKR ${Math.round(selectedParcel.amount).toLocaleString()}` : "Pending"}
                     </span>

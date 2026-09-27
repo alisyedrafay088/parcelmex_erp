@@ -322,6 +322,7 @@ export function Parcels() {
               <th>Weight</th>
               <th>Rate/kg</th>
               <th>Amount</th>
+              <th>COD</th>
               <th>Rider</th>
               <th>Warehouse</th>
               <th>Est. Delivery</th>
@@ -353,6 +354,7 @@ export function Parcels() {
                 <td>
                   <AmountCell parcel={parcel} onSave={(amount) => handleAmountChange(parcel.id, amount)} />
                 </td>
+                <td className="fleet-muted">{parcel.cod_amount > 0 ? formatPkr(parcel.cod_amount) : "—"}</td>
                 <td>
                   <select
                     className="pill-select plain-select"
@@ -420,7 +422,7 @@ export function Parcels() {
             ))}
             {filteredParcels.length === 0 && (
               <tr>
-                <td colSpan={11} className="empty-state">
+                <td colSpan={12} className="empty-state">
                   {filterClientId ? "No parcels for this customer." : "No parcels booked yet."}
                 </td>
               </tr>

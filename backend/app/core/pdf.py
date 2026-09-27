@@ -257,7 +257,8 @@ def generate_airway_bill_pdf(parcel: Parcel, client: Client) -> bytes:
         ("Destination", destination_label),
     ]
     order_rows = [
-        ("Amount", f"PKR {parcel.amount:,.0f}" if parcel.amount else "Pending"),
+        ("COD", f"PKR {parcel.cod_amount:,.0f}" if parcel.cod_amount else "-"),
+        ("Charges", f"PKR {parcel.amount:,.0f}" if parcel.amount else "Pending"),
         ("Date", parcel.created_at.strftime("%d/%m/%Y")),
         ("Order Type", "Normal"),
     ]

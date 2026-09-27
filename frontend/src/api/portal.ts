@@ -74,6 +74,7 @@ export const portalApi = {
       receiver_phone?: string;
       weight_kg: number;
       quantity: number;
+      cod_amount?: number;
     },
   ) => request<Parcel>("/portal/parcels", token, { method: "POST", body: JSON.stringify(data) }),
   bookParcelsBatch: (
@@ -85,6 +86,7 @@ export const portalApi = {
       receiver_phone?: string;
       weight_kg: number;
       quantity: number;
+      cod_amount?: number;
     }[],
   ) => request<Parcel[]>("/portal/parcels/batch", token, { method: "POST", body: JSON.stringify({ items }) }),
   bulkUploadParcels: async (token: string, file: File): Promise<BulkUploadResult> => {

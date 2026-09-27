@@ -18,6 +18,7 @@ export interface Parcel {
   quantity: number;
   rate_per_kg: number;
   amount: number;
+  cod_amount: number;
   address_status: AddressVerificationStatus;
   address_lat: number | null;
   address_lng: number | null;
@@ -69,6 +70,7 @@ export const parcelsApi = {
       weight_kg: number;
       quantity: number;
       rate_per_kg: number;
+      cod_amount?: number;
     },
   ) => request<Parcel>("/parcels", token, { method: "POST", body: JSON.stringify(data) }),
   update: (

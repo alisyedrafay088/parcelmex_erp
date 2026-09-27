@@ -16,7 +16,13 @@ from app.models.parcel import Parcel, ParcelStatus
 from app.models.rider import Rider
 from app.models.user import User
 from app.schemas.invoice import InvoiceOut
-from app.schemas.parcel import AddressVerificationUpdate, ParcelOut, PortalParcelBatchCreate, PortalParcelCreate
+from app.schemas.parcel import (
+    PORTAL_RATE_PER_PIECE,
+    AddressVerificationUpdate,
+    ParcelOut,
+    PortalParcelBatchCreate,
+    PortalParcelCreate,
+)
 from app.schemas.portal import BulkUploadResult, PortalClientOut, PortalParcelOut, PortalParcelUpdate, PortalSummary
 
 MAX_BULK_ROWS = 500
@@ -140,7 +146,8 @@ def _new_parcel(db: Session, client_id: int, item: PortalParcelCreate) -> Parcel
         weight_kg=item.weight_kg,
         quantity=item.quantity,
         rate_per_kg=0,
-        amount=0,
+        amount=item.quantity * PORTAL_RATE_PER_PIECE,
+        cod_amount=item.cod_amount,
     )
 
 
@@ -205,7 +212,8 @@ async def bulk_upload_parcels(
             weight_kg=row.weight_kg,
             quantity=row.quantity,
             rate_per_kg=0,
-            amount=0,
+            amount=row.quantity * PORTAL_RATE_PER_PIECE,
+            cod_amount=row.cod_amount,
         )
         db.add(parcel)
         db.flush()

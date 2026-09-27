@@ -5,6 +5,7 @@ from pydantic import BaseModel, Field
 from app.models.parcel import AddressVerificationStatus, ParcelStatus
 
 DEFAULT_RATE_PER_KG = 50.0
+PORTAL_RATE_PER_PIECE = 250.0
 
 
 class ParcelCreate(BaseModel):
@@ -18,6 +19,7 @@ class ParcelCreate(BaseModel):
     weight_kg: float
     quantity: int = 1
     rate_per_kg: float = DEFAULT_RATE_PER_KG
+    cod_amount: float = Field(default=0, ge=0)
     status: ParcelStatus = ParcelStatus.pending
 
 
@@ -32,6 +34,7 @@ class ParcelUpdate(BaseModel):
     quantity: int | None = None
     rate_per_kg: float | None = None
     amount: float | None = None
+    cod_amount: float | None = Field(default=None, ge=0)
     status: ParcelStatus | None = None
 
 
@@ -42,6 +45,7 @@ class PortalParcelCreate(BaseModel):
     receiver_phone: str | None = None
     weight_kg: float = Field(gt=0)
     quantity: int = Field(default=1, gt=0)
+    cod_amount: float = Field(default=0, ge=0)
 
 
 class PortalParcelBatchCreate(BaseModel):
@@ -63,6 +67,7 @@ class ParcelOut(BaseModel):
     quantity: int
     rate_per_kg: float
     amount: float
+    cod_amount: float = 0
     address_status: AddressVerificationStatus
     address_lat: float | None
     address_lng: float | None

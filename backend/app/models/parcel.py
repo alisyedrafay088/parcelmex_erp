@@ -46,5 +46,6 @@ class Parcel(Base):
     quantity: Mapped[int] = mapped_column(Integer, default=1)
     rate_per_kg: Mapped[float] = mapped_column(Numeric(10, 2), default=0)
     amount: Mapped[float] = mapped_column(Numeric(10, 2), default=0)
+    cod_amount: Mapped[float] = mapped_column(Numeric(10, 2), default=0)
     created_at: Mapped[datetime] = mapped_column(DateTime, server_default=func.now())
     delivered_at: Mapped[datetime] = mapped_column(DateTime, nullable=True)

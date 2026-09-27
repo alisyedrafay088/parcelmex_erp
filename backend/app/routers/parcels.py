@@ -82,6 +82,7 @@ def create_parcel(payload: ParcelCreate, db: Session = Depends(get_db)):
         quantity=payload.quantity,
         rate_per_kg=payload.rate_per_kg,
         amount=round(payload.weight_kg * payload.rate_per_kg, 2),
+        cod_amount=payload.cod_amount,
     )
     db.add(parcel)
     db.commit()
@@ -105,7 +106,9 @@ def update_parcel(parcel_id: int, payload: ParcelUpdate, db: Session = Depends(g
     for field, value in data.items():
         setattr(parcel, field, value)
 
-    if "weight_kg" in data or "rate_per_kg" in data:
+    # Portal bookings are priced per piece (rate_per_kg = 0), so only recompute from weight
+    # when the parcel actually has a per-kg rate -- otherwise a weight edit would zero its amount.
+    if "rate_per_kg" in data or ("weight_kg" in data and float(parcel.rate_per_kg) > 0):
         parcel.amount = round(float(parcel.weight_kg) * float(parcel.rate_per_kg), 2)
 
     if data.get("status") == ParcelStatus.delivered and parcel.delivered_at is None:

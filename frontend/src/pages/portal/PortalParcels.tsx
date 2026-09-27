@@ -10,6 +10,7 @@ interface DraftRow {
   receiverPhone: string;
   weightKg: string;
   quantity: string;
+  codAmount: string;
 }
 
 function emptyRow(): DraftRow {
@@ -20,12 +21,13 @@ function emptyRow(): DraftRow {
     receiverPhone: "",
     weightKg: "",
     quantity: "1",
+    codAmount: "",
   };
 }
 
 const TEMPLATE_CSV =
-  "destination_address,description,weight_kg,quantity\n" +
-  '"House 12, Street 5, DHA Phase 6, Karachi",Sample item description,10,2\n';
+  "destination_address,description,weight_kg,quantity,cod_amount\n" +
+  '"House 12, Street 5, DHA Phase 6, Karachi",Sample item description,10,2,3500\n';
 
 function downloadTemplate() {
   const blob = new Blob([TEMPLATE_CSV], { type: "text/csv" });
@@ -114,6 +116,10 @@ export function PortalParcels() {
         setBookError("Every parcel needs a weight greater than 0.");
         return;
       }
+      if (row.codAmount && Number(row.codAmount) < 0) {
+        setBookError("COD amount cannot be negative.");
+        return;
+      }
     }
 
     try {
@@ -126,6 +132,7 @@ export function PortalParcels() {
           receiver_phone: row.receiverPhone,
           weight_kg: Number(row.weightKg),
           quantity: Number(row.quantity) || 1,
+          cod_amount: Number(row.codAmount) || 0,
         })),
       );
       setRows([emptyRow()]);
@@ -294,7 +301,16 @@ export function PortalParcels() {
                   placeholder="Quantity"
                   value={row.quantity}
                   onChange={(e) => updateRow(index, "quantity", e.target.value)}
+                  title="Pieces (PKR 250 per piece)"
                   required
+                />
+                <input
+                  type="number"
+                  min="0"
+                  step="1"
+                  placeholder="COD amount (PKR)"
+                  value={row.codAmount}
+                  onChange={(e) => updateRow(index, "codAmount", e.target.value)}
                 />
                 <button
                   type="button"
@@ -328,13 +344,17 @@ export function PortalParcels() {
                 <div className="portal-parcel-main">
                   <span className="portal-parcel-tracking">{parcel.tracking_id}</span>
                   <span className="portal-parcel-meta">
-                    {parcel.weight_kg} kg · Booked {formatDate(parcel.created_at)}
+                    {parcel.weight_kg} kg{parcel.quantity > 1 ? ` · ${parcel.quantity} pcs` : ""} · Booked{" "}
+                    {formatDate(parcel.created_at)}
                     {parcel.delivered_at ? ` · Delivered ${formatDate(parcel.delivered_at)}` : ""}
                   </span>
                   {parcel.destination_address && (
                     <span className="portal-parcel-meta">📍 {parcel.destination_address}</span>
                   )}
                   {parcel.description && <span className="portal-parcel-meta">{parcel.description}</span>}
+                  {parcel.cod_amount > 0 && (
+                    <span className="portal-parcel-meta">💵 COD: {formatPkr(parcel.cod_amount)}</span>
+                  )}
                   {parcel.estimated_delivery_at && (
                     <span className="portal-parcel-meta">
                       🕒 Estimated delivery: {formatDate(parcel.estimated_delivery_at)}
