@@ -47,6 +47,7 @@ class PortalParcelCreate(BaseModel):
     weight_kg: float = Field(gt=0)
     quantity: int = Field(default=1, gt=0, le=100)
     cod_amount: float = Field(default=0, ge=0)
+    delivery_charge: float | None = Field(default=None, ge=0)
 
 
 class PortalParcelBatchCreate(BaseModel):

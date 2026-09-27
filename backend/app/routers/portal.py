@@ -146,7 +146,7 @@ def _new_parcel(db: Session, client_id: int, item: PortalParcelCreate) -> Parcel
         weight_kg=item.weight_kg,
         quantity=item.quantity,
         rate_per_kg=0,
-        amount=PORTAL_DELIVERY_CHARGE,
+        amount=item.delivery_charge if item.delivery_charge is not None else PORTAL_DELIVERY_CHARGE,
         cod_amount=item.cod_amount,
     )
 

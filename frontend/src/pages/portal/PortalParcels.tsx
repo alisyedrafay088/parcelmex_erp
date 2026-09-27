@@ -9,6 +9,7 @@ interface DraftRow {
   receiverName: string;
   receiverPhone: string;
   weightKg: string;
+  deliveryCharge: string;
   codAmount: string;
 }
 
@@ -19,6 +20,7 @@ function emptyRow(): DraftRow {
     receiverName: "",
     receiverPhone: "",
     weightKg: "",
+    deliveryCharge: "",
     codAmount: "",
   };
 }
@@ -114,6 +116,10 @@ export function PortalParcels() {
         setBookError("Every parcel needs a weight greater than 0.");
         return;
       }
+      if (row.deliveryCharge && Number(row.deliveryCharge) < 0) {
+        setBookError("Delivery charges cannot be negative.");
+        return;
+      }
       if (row.codAmount && Number(row.codAmount) < 0) {
         setBookError("COD amount cannot be negative.");
         return;
@@ -131,6 +137,7 @@ export function PortalParcels() {
           weight_kg: Number(row.weightKg),
           quantity: 1,
           cod_amount: Number(row.codAmount) || 0,
+          delivery_charge: row.deliveryCharge ? Number(row.deliveryCharge) : undefined,
         })),
       );
       setRows([emptyRow()]);
@@ -293,7 +300,15 @@ export function PortalParcels() {
                   onChange={(e) => updateRow(index, "weightKg", e.target.value)}
                   required
                 />
-                <input value="Delivery charges: PKR 250" readOnly tabIndex={-1} title="Flat delivery charge per booking" />
+                <input
+                  type="number"
+                  min="0"
+                  step="1"
+                  placeholder="Delivery charges (PKR 250)"
+                  value={row.deliveryCharge}
+                  onChange={(e) => updateRow(index, "deliveryCharge", e.target.value)}
+                  title="Leave empty to use the standard PKR 250"
+                />
                 <input
                   type="number"
                   min="0"
