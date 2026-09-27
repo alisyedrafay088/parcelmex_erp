@@ -359,8 +359,8 @@ export function PortalParcels() {
                   {parcel.description && <span className="portal-parcel-meta">{parcel.description}</span>}
                   {parcel.cod_amount > 0 && (
                     <span className="portal-parcel-meta">
-                      💵 Parcel amount: {formatPkr(parcel.cod_amount)} · Total COD:{" "}
-                      {formatPkr(parcel.cod_amount + parcel.amount)}
+                      💵 Parcel amount: {formatPkr(parcel.cod_amount)} · Delivery:{" "}
+                      {parcel.amount > 0 ? formatPkr(parcel.amount) : "pending"}
                     </span>
                   )}
                   {parcel.estimated_delivery_at && (
@@ -386,9 +386,13 @@ export function PortalParcels() {
                   <span className={`status-badge parcel-status-${parcel.status}`}>
                     {parcel.status.replace("_", " ")}
                   </span>
-                  <span className={parcel.amount > 0 ? "portal-parcel-amount" : "portal-parcel-amount-pending"}>
-                    {parcel.amount > 0 ? formatPkr(parcel.amount) : "Pricing pending"}
-                  </span>
+                  {parcel.amount + parcel.cod_amount > 0 ? (
+                    <span className="portal-parcel-amount" title="Total COD (parcel amount + delivery)">
+                      {formatPkr(parcel.amount + parcel.cod_amount)}
+                    </span>
+                  ) : (
+                    <span className="portal-parcel-amount-pending">Pricing pending</span>
+                  )}
                 </div>
               </div>
             </div>
