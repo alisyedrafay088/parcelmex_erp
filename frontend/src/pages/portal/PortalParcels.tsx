@@ -121,7 +121,7 @@ export function PortalParcels() {
         return;
       }
       if (row.codAmount && Number(row.codAmount) < 0) {
-        setBookError("COD amount cannot be negative.");
+        setBookError("Parcel amount cannot be negative.");
         return;
       }
     }
@@ -313,7 +313,7 @@ export function PortalParcels() {
                   type="number"
                   min="0"
                   step="1"
-                  placeholder="COD amount (PKR)"
+                  placeholder="Parcel amount (PKR)"
                   value={row.codAmount}
                   onChange={(e) => updateRow(index, "codAmount", e.target.value)}
                 />
@@ -358,7 +358,10 @@ export function PortalParcels() {
                   )}
                   {parcel.description && <span className="portal-parcel-meta">{parcel.description}</span>}
                   {parcel.cod_amount > 0 && (
-                    <span className="portal-parcel-meta">💵 COD: {formatPkr(parcel.cod_amount)}</span>
+                    <span className="portal-parcel-meta">
+                      💵 Parcel amount: {formatPkr(parcel.cod_amount)} · Total COD:{" "}
+                      {formatPkr(parcel.cod_amount + parcel.amount)}
+                    </span>
                   )}
                   {parcel.estimated_delivery_at && (
                     <span className="portal-parcel-meta">

@@ -322,7 +322,7 @@ export function Parcels() {
               <th>Weight</th>
               <th>Rate/kg</th>
               <th>Amount</th>
-              <th>COD</th>
+              <th>Parcel Amt</th>
               <th>Rider</th>
               <th>Warehouse</th>
               <th>Est. Delivery</th>

@@ -166,15 +166,21 @@ export function PortalAirwayBill() {
                     <span className="airway-preview-value">{selectedParcel.weight_kg} kg</span>
                   </div>
                   <div>
-                    <span className="airway-preview-label">COD Amount</span>
+                    <span className="airway-preview-label">Parcel Amount</span>
                     <span className="airway-preview-value">
                       {selectedParcel.cod_amount ? `PKR ${Math.round(selectedParcel.cod_amount).toLocaleString()}` : "-"}
                     </span>
                   </div>
                   <div>
-                    <span className="airway-preview-label">Charges</span>
+                    <span className="airway-preview-label">Delivery Charges</span>
                     <span className="airway-preview-value">
                       {selectedParcel.amount ? `PKR ${Math.round(selectedParcel.amount).toLocaleString()}` : "Pending"}
+                    </span>
+                  </div>
+                  <div>
+                    <span className="airway-preview-label">Total (COD)</span>
+                    <span className="airway-preview-value">
+                      PKR {Math.round(selectedParcel.cod_amount + selectedParcel.amount).toLocaleString()}
                     </span>
                   </div>
                   <div>
