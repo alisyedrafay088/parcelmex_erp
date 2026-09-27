@@ -5,7 +5,8 @@ from pydantic import BaseModel, Field
 from app.models.parcel import AddressVerificationStatus, ParcelStatus
 
 DEFAULT_RATE_PER_KG = 50.0
-PORTAL_RATE_PER_PIECE = 250.0
+# Flat delivery charge per portal booking (one airway bill), regardless of pieces inside.
+PORTAL_DELIVERY_CHARGE = 250.0
 
 
 class ParcelCreate(BaseModel):
@@ -44,7 +45,7 @@ class PortalParcelCreate(BaseModel):
     receiver_name: str | None = None
     receiver_phone: str | None = None
     weight_kg: float = Field(gt=0)
-    quantity: int = Field(default=1, gt=0)
+    quantity: int = Field(default=1, gt=0, le=100)
     cod_amount: float = Field(default=0, ge=0)
 
 

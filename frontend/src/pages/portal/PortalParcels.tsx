@@ -298,10 +298,11 @@ export function PortalParcels() {
                 <input
                   type="number"
                   min="1"
-                  placeholder="No. of parcels (PKR 250 each)"
+                  max="100"
+                  placeholder="Pieces (no. of boxes)"
                   value={row.quantity}
                   onChange={(e) => updateRow(index, "quantity", e.target.value)}
-                  title="Pieces (PKR 250 per piece)"
+                  title="How many boxes/packets in this shipment. Delivery charge is PKR 250 per booking."
                 />
                 <input
                   type="number"
