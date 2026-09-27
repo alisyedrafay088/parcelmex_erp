@@ -20,7 +20,7 @@ function emptyRow(): DraftRow {
     receiverName: "",
     receiverPhone: "",
     weightKg: "",
-    quantity: "1",
+    quantity: "",
     codAmount: "",
   };
 }
@@ -298,11 +298,10 @@ export function PortalParcels() {
                 <input
                   type="number"
                   min="1"
-                  placeholder="Quantity"
+                  placeholder="No. of parcels (PKR 250 each)"
                   value={row.quantity}
                   onChange={(e) => updateRow(index, "quantity", e.target.value)}
                   title="Pieces (PKR 250 per piece)"
-                  required
                 />
                 <input
                   type="number"
