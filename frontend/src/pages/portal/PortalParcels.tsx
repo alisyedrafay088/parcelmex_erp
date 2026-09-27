@@ -9,7 +9,6 @@ interface DraftRow {
   receiverName: string;
   receiverPhone: string;
   weightKg: string;
-  quantity: string;
   codAmount: string;
 }
 
@@ -20,7 +19,6 @@ function emptyRow(): DraftRow {
     receiverName: "",
     receiverPhone: "",
     weightKg: "",
-    quantity: "",
     codAmount: "",
   };
 }
@@ -131,7 +129,7 @@ export function PortalParcels() {
           receiver_name: row.receiverName,
           receiver_phone: row.receiverPhone,
           weight_kg: Number(row.weightKg),
-          quantity: Number(row.quantity) || 1,
+          quantity: 1,
           cod_amount: Number(row.codAmount) || 0,
         })),
       );
@@ -295,15 +293,7 @@ export function PortalParcels() {
                   onChange={(e) => updateRow(index, "weightKg", e.target.value)}
                   required
                 />
-                <input
-                  type="number"
-                  min="1"
-                  max="100"
-                  placeholder="Pieces (no. of boxes)"
-                  value={row.quantity}
-                  onChange={(e) => updateRow(index, "quantity", e.target.value)}
-                  title="How many boxes/packets in this shipment. Delivery charge is PKR 250 per booking."
-                />
+                <input value="Delivery charges: PKR 250" readOnly tabIndex={-1} title="Flat delivery charge per booking" />
                 <input
                   type="number"
                   min="0"
